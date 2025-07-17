@@ -29,7 +29,7 @@ public with sharing class EmployeeHelper {
     public static void handleQuarterScoreUpdate( List<Employee__c> empList, Map<Id, Employee__c> empMap){
 
         Integer currentMonth = Date.today().month();
-        Integer nextQuarter = Math.mod( Date.today().month() + 3, 12 );
+        Integer nextQuarter = Math.mod( currentMonth + 3, 12 );
 
         for( Employee__c emp : empList ){
             Employee__c temp = empMap.get( emp.Id );
@@ -74,6 +74,30 @@ public with sharing class EmployeeHelper {
         }
 
     }
+
+    public static void handleAverageUpdate( List<Employee__c> empList, Map<Id, Employee__c> empMap ){
+
+        for( Employee__c emp : empList ){
+
+            if( emp.Average_Score__c != empMap.get( emp.Id ).Average_Score__c ){
+                if( emp.Average_Score__c >= 85 ){
+                    emp.Performance__c = 'Excellent';
+                }
+                else if( emp.Average_Score__c >= 70 && emp.Average_Score__c <= 84.9 ){
+                    emp.Performance__c = 'Good';
+                }
+                else if( emp.Average_Score__c >= 50 && emp.Average_Score__c <= 69.9 ){
+                    emp.Performance__c = 'Average';
+                }
+                else{
+                    emp.Performance__c = 'Poor';
+                }
+            }
+
+        }
+
+    }
+
 }
 
 /*
