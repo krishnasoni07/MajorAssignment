@@ -10,7 +10,7 @@ public with sharing class SetLeads implements Database.Batchable<SObject>, Datab
     public static Database.QueryLocator start( Database.BatchableContext bc ){
         List<User> activeUsers = [ SELECT Id FROM User WHERE LastLoginDate = LAST_N_DAYS:25 AND IsActive = True ];
 
-        return Database.getQueryLocator('SELECT Id, Name, Company_Size__c, City__c, Company, Special_Lead__c, Referrer_Email__c FROM Lead WHERE CreatedDate = TODAY AND Special_Lead__c = false AND OwnerId IN :activeUsers.Id');
+        return Database.getQueryLocator('SELECT Id, Name, Company_Size__c, City__c, Company, Special_Lead__c, Referrer_Email__c FROM Lead WHERE CreatedDate = TODAY AND Special_Lead__c = false AND OwnerId IN :activeUsers');
     }
 
     public void execute( Database.BatchableContext bc, List<Lead> nonSpecialLeads ){
@@ -18,6 +18,10 @@ public with sharing class SetLeads implements Database.Batchable<SObject>, Datab
         List<Lead> leadsToUpdate = new List<Lead>();
 
         for( Lead lead : nonSpecialLeads ){
+            System.debug( lead );
+            System.debug( LeadBatchHelper.isTierOneCity( lead.City__c ) );
+            System.debug( LeadBatchHelper.getVowelsCount( lead.Company) );
+
             if( lead.Company_Size__c >= 500 &&
                 LeadBatchHelper.isTierOneCity( lead.City__c ) &&
                 LeadBatchHelper.getVowelsCount( lead.Company) >= 2

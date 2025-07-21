@@ -7,11 +7,37 @@ public with sharing class LeadBatchHelper {
     }
 
     public static Integer getVowelsCount( String companyName ){
+
+        companyName = companyName.toLowerCase();
         Integer count = 0;
 
-        for(Integer i = 0; i < companyName.length(); i++) {
-            if( 'aeiouAEIOU'.contains( String.valueOf( companyName.charAt(i) ) ) )
-                count++;
+        for(Integer i = 0; i < companyName.length();i++){
+
+            String temp = String.valueOf(companyName.charAt(i));
+
+            if( temp != '32' ){
+                switch on temp {
+                    when '97' {
+                       count++;
+                    } 
+                    when '101' {
+                       count++;
+                    } 
+                    when '105' {
+                       count++;
+                    } 
+                    when '111' {
+                       count++;
+                    } 
+                    when '117' {
+                       count++;
+                    }
+                    when else {
+                        
+                    }
+                }
+            }
+
         }
 
         return count;
