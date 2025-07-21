@@ -60,4 +60,34 @@ public with sharing class LeadBatchHelper {
         }
     }
 
+    public static void sendUntouchedEmails( Map<Id, Integer> leadIdWithDays ){
+
+        List<User> usersEmails = [ SELECT Email FROM User WHERE Profile.Name = 'System Administrator' AND UserRole.Name = 'Manager' AND IsActive = true ];
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+
+        String mailText = '';
+
+        for( Id leadId : leadIdWithDays.keySet() ){
+            mailText += 'Special Lead With Id : ' + leadId + ' is Untouched for ' + leadIdWithDays.get( leadId ) + ' Days\n';
+        }
+
+        for( User user : usersEmails ){
+
+            Messaging.SingleEmailMessage tempEmail = new Messaging.SingleEmailMessage();
+            tempEmail.setToAddresses(new String[] { user.Email });
+            tempEmail.setPlainTextBody(mailText);
+            tempEmail.setSubject('Untouched Special Leads');
+            
+            emails.add(tempEmail);
+        }
+
+        if( !emails.isEmpty() ){
+            try{
+                Messaging.sendEmail(emails);
+            }
+            catch(Exception e){
+                System.debug( e.getMessage() );
+            }
+        }
+    }
 }
